@@ -62,21 +62,40 @@ if st.button("Рассчитать"):
              height=600)
     st.plotly_chart(fig_per_product)
 
-    data_per_bank_product = data[data['rank_pred'] <= 10].groupby(['request_calc_id', 'product_type', 'bank_name'])['rank_pred'].mean().reset_index()
-    data_per_bank_product = data_per_bank_product.groupby(['product_type', 'bank_name'])['rank_pred'].mean().reset_index().sort_values(by='rank_pred', ascending=False)
-    
-    data_per_bank_product['rank_pred'] = data_per_bank_product['rank_pred'].astype('category')
-    data_per_bank_product['group'] = data_per_bank_product['product_type'] + ' (' + data_per_bank_product['bank_name'] + ')'
-    data_per_bank_product['group'] = data_per_bank_product['group'].astype('category')
+    # Группировка данных по 'request_calc_id', 'product_type', 'bank_name' и вычисление среднего rank_pred
+    data_per_bank_product = data[data['rank_pred'] <= 10] \
+        .groupby(['request_calc_id', 'product_type', 'bank_name'])['rank_pred'] \
+        .mean().reset_index()
 
+    # Далее группируем по 'product_type', 'bank_name' и снова считаем среднее, сортируем по rank_pred
+    data_per_bank_product = data_per_bank_product.groupby(['product_type', 'bank_name'])['rank_pred'] \
+        .mean().reset_index().sort_values(by='rank_pred', ascending=False)
+
+    # Создаем новый столбец 'group' и объединяем 'product_type' и 'bank_name'
+    data_per_bank_product['group'] = data_per_bank_product['product_type'] + ' (' + data_per_bank_product['bank_name'] + ')'
+
+    # Устанавливаем порядок категорий для 'group' и 'rank_pred'
+    data_per_bank_product['group'] = pd.Categorical(data_per_bank_product['group'],
+                                                    categories=data_per_bank_product['group'],
+                                                    ordered=True)
+
+    # Устанавливаем порядок категорий для 'rank_pred' (сортировка по убыванию)
+    data_per_bank_product['rank_pred'] = pd.Categorical(data_per_bank_product['rank_pred'],
+                                                        categories=sorted(data_per_bank_product['rank_pred'], reverse=True),
+                                                        ordered=True)
+
+    # Строим график
     fig_per_bank_product = px.bar(data_per_bank_product,
-                                   x='rank_pred', y='group', 
-                                   color = 'product_type',
-             title="Средняя уверенность модели по типам офферов", 
-             labels={'offer_type': 'Тип оффера', 'model_confidence': 'Средняя уверенность модели'},
-             orientation='h', 
-             height=600)
+                                x='rank_pred', y='group', 
+                                color='product_type',
+                                title="Средняя уверенность модели по типам офферов", 
+                                labels={'rank_pred': 'Средняя уверенность модели', 'group': 'Тип оффера по банкам'},
+                                orientation='h', 
+                                height=600)
+
+    # Отображаем график в Streamlit
     st.plotly_chart(fig_per_bank_product)
+
 
 
         # Найдём максимум

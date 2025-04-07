@@ -67,7 +67,7 @@ if st.button("Рассчитать"):
     
     data_per_bank_product['group'] = data_per_bank_product['product_type'] + ' (' + data_per_bank_product['bank_name'] + ')'
     data_per_bank_product['group'] = data_per_bank_product['group'].astype('category')
-    category_order_group = data_per_bank_product.sort_values(by='rank_pred', ascending=False)['group'].tolist()
+    category_order_group = data_per_bank_product.sort_values(by='rank_pred', ascending=True)['group'].tolist()
 
 
     fig_per_bank_product = px.bar(data_per_bank_product,

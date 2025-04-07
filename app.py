@@ -74,7 +74,7 @@ if st.button("Рассчитать"):
                                    color = 'product_type',
              title="Средняя уверенность модели по типам офферов", 
              labels={'offer_type': 'Тип оффера', 'model_confidence': 'Средняя уверенность модели'},
-             orient='h', 
+             orientation='h', 
              height=600)
     st.plotly_chart(fig_per_bank_product)
 

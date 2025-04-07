@@ -79,7 +79,7 @@ if st.button("Рассчитать"):
     max_point = grid.iloc[max_idx]
 
     # Основной 3D-график
-    fig = go.Figure(data=[go.Scatter3d(
+    fig2 = go.Figure(data=[go.Scatter3d(
         x=grid['a'],
         y=grid['b'],
         z=grid['res'],
@@ -95,7 +95,7 @@ if st.button("Рассчитать"):
     )])
 
     # Добавим точку максимума
-    fig.add_trace(go.Scatter3d(
+    fig2.add_trace(go.Scatter3d(
         x=[max_point['a']],
         y=[max_point['b']],
         z=[max_point['res']],
@@ -111,7 +111,7 @@ if st.button("Рассчитать"):
     ))
 
     # Настройка сцены
-    fig.update_layout(
+    fig2.update_layout(
         scene=dict(
             xaxis_title='a',
             yaxis_title='b',
@@ -121,4 +121,4 @@ if st.button("Рассчитать"):
         margin=dict(l=0, r=0, b=0, t=40)
     )
 
-    fig.show()
+    st.plotly_chart(fig2)

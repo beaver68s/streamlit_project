@@ -67,12 +67,14 @@ if st.button("Рассчитать"):
     
     data_per_bank_product['rank_pred'] = data_per_bank_product['rank_pred'].astype('category')
     data_per_bank_product['group'] = data_per_bank_product['product_type'] + ' (' + data_per_bank_product['bank_name'] + ')'
+    data_per_bank_product['group'] = data_per_bank_product['group'].astype('category')
 
     fig_per_bank_product = px.bar(data_per_bank_product,
                                    x='rank_pred', y='group', 
                                    color = 'product_type',
              title="Средняя уверенность модели по типам офферов", 
-             labels={'offer_type': 'Тип оффера', 'model_confidence': 'Средняя уверенность модели'}, 
+             labels={'offer_type': 'Тип оффера', 'model_confidence': 'Средняя уверенность модели'},
+             orient='h', 
              height=600)
     st.plotly_chart(fig_per_bank_product)
 

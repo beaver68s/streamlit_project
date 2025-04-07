@@ -50,15 +50,22 @@ text = """
 
 if st.button("Рассчитать"):
     result, data = get_uplift(data, a, b)
-    data = data[data['rank_pred'] <= 10].groupby(['request_calc_id', 'product_type', 'bank_name'])['rank_pred'].mean().reset_index()
-    data = data.groupby(['product_type', 'bank_name'])['rank_pred'].mean().reset_index().sort_values(by='rank_pred', ascending=False)
-
-    data['group'] = data['product_type'] + ' (' + data['bank_name'] + ')'
-
     st.markdown(text.format(old_values, init_values, result))
-    fig = px.bar(data, x='rank_pred', y='group', 
+
+    data_per_product = data[data['rank_pred'] <= 10].groupby(['product_type'])['rank_pred'].mean().reset_index()
+
+    data_per_bank_product = data[data['rank_pred'] <= 10].groupby(['request_calc_id', 'product_type', 'bank_name'])['rank_pred'].mean().reset_index()
+    data_per_bank_product = data_per_bank_product.groupby(['product_type', 'bank_name'])['rank_pred'].mean().reset_index().sort_values(by='rank_pred', ascending=False)
+    data_per_bank_product['group'] = data_per_bank_product['product_type'] + ' (' + data['bank_name'] + ')'
+
+    fig_per_product = px.bar(data_per_product, x='rank_pred', y='product_type', 
              title="Средняя уверенность модели по типам офферов", 
              labels={'offer_type': 'Тип оффера', 'model_confidence': 'Средняя уверенность модели'}, 
-            #  color = 'product_type',
              height=600)
-    st.plotly_chart(fig)
+    st.plotly_chart(fig_per_product)
+
+    fig_per_bank_product = px.bar(data_per_bank_product, x='rank_pred', y='group', 
+             title="Средняя уверенность модели по типам офферов", 
+             labels={'offer_type': 'Тип оффера', 'model_confidence': 'Средняя уверенность модели'}, 
+             height=600)
+    st.plotly_chart(fig_per_bank_product)

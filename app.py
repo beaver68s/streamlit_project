@@ -27,7 +27,7 @@ def get_uplift(data, a, b):
 
 
 # Или можно сделать простую заглушку
-data = pd.read_csv('data/20250407_data4streamlit.csv')
+data = pd.read_csv('data/20250408_data4streamlit.csv')
 
 
 # Интерфейс

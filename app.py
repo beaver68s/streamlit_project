@@ -65,7 +65,11 @@ if st.button("Рассчитать"):
     data_per_bank_product = data[data['rank_pred'] <= 10].groupby(['request_calc_id', 'product_type', 'bank_name'])['rank_pred'].mean().reset_index()
     data_per_bank_product = data_per_bank_product.groupby(['product_type', 'bank_name'])['rank_pred'].mean().reset_index().sort_values(by='rank_pred', ascending=False)
     data_per_bank_product['group'] = data_per_bank_product['product_type'] + ' (' + data_per_bank_product['bank_name'] + ')'
-    data_per_bank_product['rank_pred'] = data_per_bank_product['rank_pred'].astype(str)
+    data_per_bank_product['group'] = pd.Categorical(
+                                    data_per_bank_product['group'],
+                                    categories=data_per_bank_product.sort_values(by='rank_pred', ascending=False)['group'],
+                                    ordered=True
+                                )
     fig_per_bank_product = px.bar(data_per_bank_product.sort_values(by='rank_pred', ascending=False),
                                    x='rank_pred', y='group', 
                                    color = 'product_type',

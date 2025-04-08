@@ -53,11 +53,11 @@ text = """
 
 if st.button("Рассчитать"):
     result, data = get_uplift(data, a, b)
-    st.markdown(text.format(old_values, init_values, result) + f"({result/old_values:.2f})")
+    st.markdown(text.format(old_values, init_values, result) + f" ({result/old_values:.2%} по сравнению с результатами без Uplift)")
 
     data_per_product = data[data['rank_pred'] <= 10].groupby(['product_type'])['rank_pred'].mean().reset_index().sort_values(by='rank_pred', ascending=False)
     fig_per_product = px.bar(data_per_product, x='rank_pred', y='product_type', 
-             title="Средняя уверенность модели по типам офферов", 
+             title="Средняя позиция по типу займа", 
              labels={'offer_type': 'Тип оффера', 'model_confidence': 'Средняя уверенность модели'}, 
              height=600)
     st.plotly_chart(fig_per_product)
@@ -73,7 +73,7 @@ if st.button("Рассчитать"):
     fig_per_bank_product = px.bar(data_per_bank_product,
                                    x='rank_pred', y='group', 
                                    color = 'product_type',
-             title="Средняя уверенность модели по типам офферов", 
+             title="Средняя позиция офферов в ПК", 
              labels={'offer_type': 'Тип оффера', 'model_confidence': 'Средняя уверенность модели'},
              orientation='h', 
              height=700,
@@ -125,7 +125,7 @@ if st.button("Рассчитать"):
             yaxis_title='b',
             zaxis_title='res'
         ),
-        title='Интерактивный 3D-график с максимумом',
+        title='Результаты подбора оптимальных параметров',
         margin=dict(l=0, r=0, b=0, t=40)
     )
 

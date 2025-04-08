@@ -49,12 +49,11 @@ text = """
 Без Uplift: {0:.2f}
 
 Результат get_uplift (равные коэффициенты): **{1:.2f}**\n
-Результат get_uplift: **{2:.2f} ({2:.2f / 0:.2f})**
-"""
+Результат get_uplift: **{2:.2f}**"""
 
 if st.button("Рассчитать"):
     result, data = get_uplift(data, a, b)
-    st.markdown(text.format(old_values, init_values, result))
+    st.markdown(text.format(old_values, init_values, result) + f"({result/old_values:.2f})")
 
     data_per_product = data[data['rank_pred'] <= 10].groupby(['product_type'])['rank_pred'].mean().reset_index().sort_values(by='rank_pred', ascending=False)
     fig_per_product = px.bar(data_per_product, x='rank_pred', y='product_type', 
